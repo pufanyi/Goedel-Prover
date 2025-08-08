@@ -9,6 +9,8 @@ import multiprocessing as mp
 
 import numpy as np
 
+from tqdm import tqdm
+
 from prover.utils import AttrDict
 
 

@@ -1,6 +1,6 @@
 INPUT_PATH=datasets/minif2f.jsonl
 MODEL_PATH=Goedel-LM/Goedel-Prover-SFT
-OUTPUT_DIR=results/minif2f/Godel-Prover-SFT
+OUTPUT_DIR=/mnt/raid10/pufanyi/lmms-lean-runner/demo/data
 SPLIT=test
 N=32
 CPU=4

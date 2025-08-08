@@ -60,6 +60,7 @@ def verify_lean4_file(code, lake_path=DEFAULT_LAKE_PATH, lean_workspace=DEFAULT_
             "system_messages": system_messages
         }
     result['verify_time'] = time.time() - start_time
+    print(result)
     return result
 
 
