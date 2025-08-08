@@ -10,6 +10,7 @@ import threading
 import subprocess
 import multiprocessing as mp
 from pprint import pprint
+from tqdm import tqdm
 
 import numpy as np
 
@@ -35,7 +36,7 @@ def verify_lean4_file(code, lake_path=DEFAULT_LAKE_PATH, lean_workspace=DEFAULT_
     system_messages = ''
     try:
         outputs = subprocess.run([lake_path, "exe", 'repl'], input=message_str, capture_output=True, text=True, cwd=lean_workspace)
-        print(outputs.stdout)
+        # print(outputs.stdout)
         result = json.loads(outputs.stdout)
         ast_results = lean4_parser(code, result['ast']) if 'ast' in result and result['ast'] else {}
         result = {
@@ -82,6 +83,7 @@ class Lean4ServerProcess(mp.Process):
         #         resource.RLIMIT_AS,
         #         (self.memory_limit * (1000 ** 3), self.memory_limit * (1000 ** 3))
         #     )
+        process_bar = tqdm(desc='Verifying', position=self.idx)
         while True:
             inputs = self.task_queue.get()
             if inputs is None: # Terminate when receiving None
@@ -104,7 +106,8 @@ class Lean4ServerProcess(mp.Process):
                     self.request_statuses[request_id] = result
                     self.last_output_time.value = time.time()
                     self.complete_count.value += 1
-
+            process_bar.update(1)
+        process_bar.close()
 
 class Lean4ServerScheduler(ProcessScheduler):
     def __init__(self, max_concurrent_requests=64, timeout=300, memory_limit=-1, name='verifier'):
